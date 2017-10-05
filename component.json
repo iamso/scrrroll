@@ -1,0 +1,17 @@
+{
+  "name": "scrrroll",
+  "repository": "iamso/scrrroll",
+  "description": "Simple smooth scrolling.",
+  "version": "0.1.0",
+  "keywords": [
+    "smooth",
+    "scrolling"
+  ],
+  "scripts": [
+    "dist/scrrroll.js",
+    "dist/scrrroll.min.js",
+    "dist/scrrroll.next.js",
+    "dist/scrrroll.next.min.js"
+  ],
+  "license": "MIT"
+}
