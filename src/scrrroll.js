@@ -64,7 +64,7 @@ export default class Scrrroll {
   static to(destination, duration = defaults.duration, easing = defaults.easing) {
     return new Promise(resolve => {
       const start = window.pageYOffset;
-      const startTime = 'now' in window.performance ? performance.now() : new Date().getTime();
+      const startTime = 'now' in window.performance ? performance.now() : Date.now();
 
       const documentHeight = this.docHeight;
       const windowHeight = this.winHeight;
