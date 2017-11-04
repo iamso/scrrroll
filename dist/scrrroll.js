@@ -1,5 +1,5 @@
 /*!
- * scrrroll - version 0.1.0
+ * scrrroll - version 0.2.0
  *
  * Made with ❤ by Steve Ottoz so@dev.so
  *
@@ -62,7 +62,8 @@
     duration: 300,
     easing: function easing(t) {
       return t;
-    }
+    },
+    offset: 0
   };
 
   /**
@@ -90,11 +91,11 @@
 
         return new Promise(function (resolve) {
           var start = window.pageYOffset;
-          var startTime = 'now' in window.performance ? performance.now() : new Date().getTime();
+          var startTime = 'now' in window.performance ? performance.now() : Date.now();
 
           var documentHeight = _this.docHeight;
           var windowHeight = _this.winHeight;
-          var destinationOffset = typeof destination === 'number' ? destination : destination.offsetTop;
+          var destinationOffset = typeof destination === 'number' ? destination : destination.offsetTop - defaults.offset;
           var destinationOffsetToScroll = Math.round(documentHeight - destinationOffset < windowHeight ? documentHeight - windowHeight : destinationOffset);
 
           if (!/^f/.test(typeof easing === 'undefined' ? 'undefined' : _typeof(easing))) {
@@ -156,10 +157,10 @@
         var elementHeight = element.offsetHeight;
         var destination = 0;
 
-        if (elementHeight >= windowHeight) {
+        if (elementHeight >= windowHeight - defaults.offset) {
           destination = element;
         } else {
-          destination = element.offsetTop - windowHeight / 2 + elementHeight / 2;
+          destination = element.offsetTop - windowHeight / 2 + elementHeight / 2 - defaults.offset / 2;
         }
 
         for (var _len3 = arguments.length, args = Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
@@ -201,6 +202,13 @@
       set: function set(easing) {
         if (/^f/.test(typeof easing === 'undefined' ? 'undefined' : _typeof(easing))) {
           defaults.easing = easing;
+        }
+      }
+    }, {
+      key: 'offset',
+      set: function set(offset) {
+        if (!isNaN(offset)) {
+          defaults.offset = +offset;
         }
       }
     }]);

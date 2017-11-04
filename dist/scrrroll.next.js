@@ -1,5 +1,5 @@
 /*!
- * scrrroll - version 0.1.0
+ * scrrroll - version 0.2.0
  *
  * Made with ❤ by Steve Ottoz so@dev.so
  *
@@ -11,7 +11,8 @@
  */
 const defaults = {
   duration: 300,
-  easing: t => t
+  easing: t => t,
+  offset: 0
 };
 
 /**
@@ -62,6 +63,16 @@ export default class Scrrroll {
   }
 
   /**
+  * Set default offset
+  * @type {Number}
+  */
+  static set offset(offset) {
+    if (!isNaN(offset)) {
+      defaults.offset = +offset;
+    }
+  }
+
+  /**
    * Scroll to a position/element
    * @param  {Number|HTMLElement} destination - position/element to scroll to
    * @param  {Number}             [duration]  - duration of scroll. defaults to defaults.duration
@@ -71,11 +82,11 @@ export default class Scrrroll {
   static to(destination, duration = defaults.duration, easing = defaults.easing) {
     return new Promise(resolve => {
       const start = window.pageYOffset;
-      const startTime = 'now' in window.performance ? performance.now() : new Date().getTime();
+      const startTime = 'now' in window.performance ? performance.now() : Date.now();
 
       const documentHeight = this.docHeight;
       const windowHeight = this.winHeight;
-      const destinationOffset = typeof destination === 'number' ? destination : destination.offsetTop;
+      const destinationOffset = typeof destination === 'number' ? destination : destination.offsetTop - defaults.offset;
       const destinationOffsetToScroll = Math.round(documentHeight - destinationOffset < windowHeight ? documentHeight - windowHeight : destinationOffset);
 
       if (!/^f/.test(typeof easing)) {
@@ -151,10 +162,10 @@ export default class Scrrroll {
     const elementHeight = element.offsetHeight;
     let destination = 0;
 
-    if (elementHeight >= windowHeight) {
+    if (elementHeight >= windowHeight - defaults.offset) {
       destination = element;
     } else {
-      destination = element.offsetTop - windowHeight / 2 + elementHeight / 2;
+      destination = element.offsetTop - windowHeight / 2 + elementHeight / 2 - defaults.offset / 2;
     }
     return this.to(destination, ...args);
   }
