@@ -5,6 +5,7 @@
 const defaults = {
   duration: 300,
   easing: t => t,
+  offset: 0,
 };
 
 /**
@@ -55,6 +56,16 @@ export default class Scrrroll {
   }
 
   /**
+  * Set default offset
+  * @type {Number}
+  */
+  static set offset(offset) {
+    if (!isNaN(offset)) {
+      defaults.offset = +offset;
+    }
+  }
+
+  /**
    * Scroll to a position/element
    * @param  {Number|HTMLElement} destination - position/element to scroll to
    * @param  {Number}             [duration]  - duration of scroll. defaults to defaults.duration
@@ -68,7 +79,7 @@ export default class Scrrroll {
 
       const documentHeight = this.docHeight;
       const windowHeight = this.winHeight;
-      const destinationOffset = typeof destination === 'number' ? destination : destination.offsetTop;
+      const destinationOffset = typeof destination === 'number' ? destination : destination.offsetTop - defaults.offset;
       const destinationOffsetToScroll = Math.round(documentHeight - destinationOffset < windowHeight ? documentHeight - windowHeight : destinationOffset);
 
       if (!/^f/.test(typeof easing)) {
@@ -144,11 +155,11 @@ export default class Scrrroll {
     const elementHeight = element.offsetHeight;
     let destination = 0;
 
-    if (elementHeight >= windowHeight) {
+    if (elementHeight >= windowHeight - defaults.offset) {
       destination = element;
     }
     else {
-      destination = element.offsetTop - (windowHeight / 2) + (elementHeight / 2);
+      destination = element.offsetTop - (windowHeight / 2) + (elementHeight / 2) - (defaults.offset / 2);
     }
     return this.to(destination, ...args);
   }
