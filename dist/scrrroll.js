@@ -1,5 +1,5 @@
 /*!
- * scrrroll - version 0.2.0
+ * scrrroll - version 0.3.0
  *
  * Made with ❤ by Steve Ottoz so@dev.so
  *
@@ -95,7 +95,7 @@
 
           var documentHeight = _this.docHeight;
           var windowHeight = _this.winHeight;
-          var destinationOffset = typeof destination === 'number' ? destination : destination.offsetTop - defaults.offset;
+          var destinationOffset = typeof destination === 'number' ? destination : Math.ceil(destination.getBoundingClientRect().top + window.pageYOffset) - defaults.offset;
           var destinationOffsetToScroll = Math.round(documentHeight - destinationOffset < windowHeight ? documentHeight - windowHeight : destinationOffset);
 
           if (!/^f/.test(typeof easing === 'undefined' ? 'undefined' : _typeof(easing))) {
@@ -154,13 +154,14 @@
       value: function center(element) {
         var documentHeight = this.docHeight;
         var windowHeight = this.winHeight;
-        var elementHeight = element.offsetHeight;
+        var elementRect = element.getBoundingClientRect();
+        var elementHeight = elementRect.height;
         var destination = 0;
 
         if (elementHeight >= windowHeight - defaults.offset) {
           destination = element;
         } else {
-          destination = element.offsetTop - windowHeight / 2 + elementHeight / 2 - defaults.offset / 2;
+          destination = Math.ceil(elementRect.top + window.pageYOffset) - windowHeight / 2 + elementHeight / 2 - defaults.offset / 2;
         }
 
         for (var _len3 = arguments.length, args = Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
@@ -172,7 +173,8 @@
     }, {
       key: 'bottom',
       value: function bottom(element) {
-        var destination = element.offsetTop - this.winHeight + element.offsetHeight;
+        var elementRect = element.getBoundingClientRect();
+        var destination = Math.ceil(elementRect.top + window.pageYOffset) - this.winHeight + elementRect.height;
 
         for (var _len4 = arguments.length, args = Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
           args[_key4 - 1] = arguments[_key4];
