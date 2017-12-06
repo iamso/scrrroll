@@ -79,7 +79,7 @@ export default class Scrrroll {
 
       const documentHeight = this.docHeight;
       const windowHeight = this.winHeight;
-      const destinationOffset = typeof destination === 'number' ? destination : destination.offsetTop - defaults.offset;
+      const destinationOffset = typeof destination === 'number' ? destination : Math.ceil(destination.getBoundingClientRect().top + window.pageYOffset) - defaults.offset;
       const destinationOffsetToScroll = Math.round(documentHeight - destinationOffset < windowHeight ? documentHeight - windowHeight : destinationOffset);
 
       if (!/^f/.test(typeof easing)) {
@@ -152,14 +152,15 @@ export default class Scrrroll {
   static center(element, ...args) {
     const documentHeight = this.docHeight;
     const windowHeight = this.winHeight;
-    const elementHeight = element.offsetHeight;
+    const elementRect = element.getBoundingClientRect();
+    const elementHeight = elementRect.height;
     let destination = 0;
 
     if (elementHeight >= windowHeight - defaults.offset) {
       destination = element;
     }
     else {
-      destination = element.offsetTop - (windowHeight / 2) + (elementHeight / 2) - (defaults.offset / 2);
+      destination = Math.ceil(elementRect.top + window.pageYOffset) - (windowHeight / 2) + (elementHeight / 2) - (defaults.offset / 2);
     }
     return this.to(destination, ...args);
   }
@@ -171,7 +172,8 @@ export default class Scrrroll {
    * @return {Promise}            - promise will be resolved when finished scrolling
    */
   static bottom(element, ...args) {
-    let destination = element.offsetTop - this.winHeight + element.offsetHeight;
+    const elementRect = element.getBoundingClientRect();
+    let destination = Math.ceil(elementRect.top + window.pageYOffset) - this.winHeight + elementRect.height;
     return this.to(destination, ...args);
   }
 }
