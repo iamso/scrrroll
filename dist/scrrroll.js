@@ -1,9 +1,9 @@
 /*!
- * scrrroll - version 0.3.0
+ * scrrroll - version 0.4.0
  *
  * Made with ❤ by Steve Ottoz so@dev.so
  *
- * Copyright (c) 2017 Steve Ottoz
+ * Copyright (c) 2019 Steve Ottoz
  */
 (function (global, factory) {
   if (typeof define === "function" && define.amd) {
@@ -108,7 +108,7 @@
             var timeFunction = easing(time);
             window.scroll(0, Math.ceil(timeFunction * (destinationOffsetToScroll - start) + start));
 
-            if (window.pageYOffset === destinationOffsetToScroll) {
+            if (Math.abs(window.pageYOffset - destinationOffsetToScroll) < 1) {
               resolve();
               return;
             }
