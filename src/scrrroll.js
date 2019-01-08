@@ -92,7 +92,7 @@ export default class Scrrroll {
         const timeFunction = easing(time);
         window.scroll(0, Math.ceil((timeFunction * (destinationOffsetToScroll - start)) + start));
 
-        if (window.pageYOffset === destinationOffsetToScroll) {
+        if (Math.abs(window.pageYOffset - destinationOffsetToScroll) < 1) {
           resolve();
           return;
         }
