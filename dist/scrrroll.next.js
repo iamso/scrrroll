@@ -1,5 +1,5 @@
 /*!
- * scrrroll - version 0.4.0
+ * scrrroll - version 0.5.0
  *
  * Made with ❤ by Steve Ottoz so@dev.so
  *
@@ -166,7 +166,7 @@ export default class Scrrroll {
     if (elementHeight >= windowHeight - defaults.offset) {
       destination = element;
     } else {
-      destination = Math.ceil(elementRect.top + window.pageYOffset) - windowHeight / 2 + elementHeight / 2 - defaults.offset / 2;
+      destination = Math.max(Math.ceil(elementRect.top + window.pageYOffset) - windowHeight / 2 + elementHeight / 2 - defaults.offset / 2, 0);
     }
     return this.to(destination, ...args);
   }

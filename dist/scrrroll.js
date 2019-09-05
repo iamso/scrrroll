@@ -1,5 +1,5 @@
 /*!
- * scrrroll - version 0.4.0
+ * scrrroll - version 0.5.0
  *
  * Made with ❤ by Steve Ottoz so@dev.so
  *
@@ -161,7 +161,7 @@
         if (elementHeight >= windowHeight - defaults.offset) {
           destination = element;
         } else {
-          destination = Math.ceil(elementRect.top + window.pageYOffset) - windowHeight / 2 + elementHeight / 2 - defaults.offset / 2;
+          destination = Math.max(Math.ceil(elementRect.top + window.pageYOffset) - windowHeight / 2 + elementHeight / 2 - defaults.offset / 2, 0);
         }
 
         for (var _len3 = arguments.length, args = Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
