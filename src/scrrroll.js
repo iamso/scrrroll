@@ -160,7 +160,7 @@ export default class Scrrroll {
       destination = element;
     }
     else {
-      destination = Math.ceil(elementRect.top + window.pageYOffset) - (windowHeight / 2) + (elementHeight / 2) - (defaults.offset / 2);
+      destination = Math.max(Math.ceil(elementRect.top + window.pageYOffset) - (windowHeight / 2) + (elementHeight / 2) - (defaults.offset / 2), 0);
     }
     return this.to(destination, ...args);
   }
