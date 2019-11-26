@@ -13,7 +13,9 @@
     "name": "Steve Ottoz",
     "email": "so@dev.so"
   },
-  "main": "dist/scrrroll.next.js",
+  "main": "dist/scrrroll.js",
+  "module": "dist/scrrroll.next.js",
+  "jsnext:main": "dist/scrrroll.next.js",
   "keywords": [
     "smooth",
     "scrolling"
