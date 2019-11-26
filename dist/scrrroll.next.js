@@ -1,5 +1,5 @@
 /*!
- * scrrroll - version 0.5.0
+ * scrrroll - version 0.5.2
  *
  * Made with ❤ by Steve Ottoz so@dev.so
  *
