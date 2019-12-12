@@ -81,23 +81,24 @@ export default class Scrrroll {
       const windowHeight = this.winHeight;
       const destinationOffset = typeof destination === 'number' ? destination : Math.ceil(destination.getBoundingClientRect().top + window.pageYOffset) - defaults.offset;
       const destinationOffsetToScroll = Math.round(documentHeight - destinationOffset < windowHeight ? documentHeight - windowHeight : destinationOffset);
+      const down = start < destinationOffsetToScroll;
 
       if (!/^f/.test(typeof easing)) {
         easing = defaults.easing;
       }
 
-      function scroll() {
+      const scroll = () => {
         const now = 'now' in window.performance ? performance.now() : Date.now();
         const time = Math.min(1, ((now - startTime) / duration));
         const timeFunction = easing(time);
         window.scroll(0, Math.ceil((timeFunction * (destinationOffsetToScroll - start)) + start));
 
-        if (Math.abs(window.pageYOffset - destinationOffsetToScroll) < 1) {
+        if (Math.abs(window.pageYOffset - destinationOffsetToScroll) < 1 || (down && window.pageYOffset >= (this.docHeight - this.winHeight))) {
           resolve();
           return;
         }
         frame = requestAnimationFrame(scroll);
-      }
+      };
 
       cancelAnimationFrame(frame);
       scroll();
