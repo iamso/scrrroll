@@ -1,5 +1,5 @@
 /*!
- * scrrroll - version 0.5.2
+ * scrrroll - version 0.6.0
  *
  * Made with ❤ by Steve Ottoz so@dev.so
  *
@@ -97,23 +97,24 @@
           var windowHeight = _this.winHeight;
           var destinationOffset = typeof destination === 'number' ? destination : Math.ceil(destination.getBoundingClientRect().top + window.pageYOffset) - defaults.offset;
           var destinationOffsetToScroll = Math.round(documentHeight - destinationOffset < windowHeight ? documentHeight - windowHeight : destinationOffset);
+          var down = start < destinationOffsetToScroll;
 
           if (!/^f/.test(typeof easing === 'undefined' ? 'undefined' : _typeof(easing))) {
             easing = defaults.easing;
           }
 
-          function scroll() {
+          var scroll = function scroll() {
             var now = 'now' in window.performance ? performance.now() : Date.now();
             var time = Math.min(1, (now - startTime) / duration);
             var timeFunction = easing(time);
             window.scroll(0, Math.ceil(timeFunction * (destinationOffsetToScroll - start) + start));
 
-            if (Math.abs(window.pageYOffset - destinationOffsetToScroll) < 1) {
+            if (Math.abs(window.pageYOffset - destinationOffsetToScroll) < 1 || down && window.pageYOffset >= _this.docHeight - _this.winHeight) {
               resolve();
               return;
             }
             frame = requestAnimationFrame(scroll);
-          }
+          };
 
           cancelAnimationFrame(frame);
           scroll();
