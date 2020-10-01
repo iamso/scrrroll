@@ -1,6 +1,6 @@
 {
   "name": "scrrroll",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Simple smooth scrolling.",
   "main": "dist/scrrroll.cjs.js",
   "module": "dist/scrrroll.esm.js",
