@@ -5,14 +5,6 @@ Simple smooth scrolling.
 Install
 -------
 
-### With Bower
-
-```bash
-bower install scrrroll
-```
-
-### With NPM
-
 ```bash
 npm install scrrroll
 ```
