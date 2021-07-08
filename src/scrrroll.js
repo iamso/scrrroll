@@ -79,7 +79,7 @@ export default class Scrrroll {
 
       const documentHeight = this.docHeight;
       const windowHeight = this.winHeight;
-      const destinationOffset = typeof destination === 'number' ? destination : Math.ceil(destination.getBoundingClientRect().top + window.pageYOffset) - defaults.offset;
+      const destinationOffset = Math.max(0, (typeof destination === 'number' ? destination : Math.ceil(destination.getBoundingClientRect().top + window.pageYOffset) - defaults.offset));
       const destinationOffsetToScroll = Math.round(documentHeight - destinationOffset < windowHeight ? documentHeight - windowHeight : destinationOffset);
       const down = start < destinationOffsetToScroll;
 
