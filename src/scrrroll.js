@@ -36,6 +36,13 @@ export default class Scrrroll {
   }
 
   /**
+   * Get current duration
+   */
+  static get duration() {
+    return defaults.duration;
+  }
+
+  /**
    * Set default duration
    * @type {Number}
    */
@@ -46,6 +53,13 @@ export default class Scrrroll {
   }
 
   /**
+   * Get current easing function
+   */
+  static get easing() {
+    return defaults.easing;
+  }
+
+  /**
    * Set default easing function
    * @type {Function}
    */
@@ -53,6 +67,13 @@ export default class Scrrroll {
     if (/^f/.test(typeof easing)) {
       defaults.easing = easing;
     }
+  }
+
+  /**
+  * Get current offset
+  */
+  static get offset() {
+    return defaults.offset;
   }
 
   /**
