@@ -6,6 +6,7 @@ const defaults = {
   duration: 300,
   easing: t => t,
   offset: 0,
+  container: window
 };
 
 /**
@@ -86,22 +87,40 @@ export default class Scrrroll {
     }
   }
 
+   /**
+   * Get current container
+   */
+   static get container() {
+    return defaults.container;
+  }
+
+  /**
+   * Set default container
+   * @type {Number}
+   */
+  static set container(container) {
+    if (container instanceof Window || container instanceof HTMLElement) {
+      defaults.container = container;
+    }
+  }
+
   /**
    * Scroll to a position/element
    * @param  {Number|HTMLElement} destination - position/element to scroll to
    * @param  {Number}             [duration]  - duration of scroll. defaults to defaults.duration
    * @param  {Function}           [easing]    - easing of scroll. defaults to defaults.easing
+   * @param  {HTMLElement|Window} [container] - the scroll container. defaults to defaults.container
    * @return {Promise}                        - promise will be resolved when finished scrolling
    */
-  static to(destination, duration = defaults.duration, easing = defaults.easing) {
+  static to(destination, duration = defaults.duration, easing = defaults.easing, container = defaults.container) {
     return new Promise(resolve => {
-      const start = window.pageYOffset;
+      const isWindow = container === window;
+      const start = isWindow ? window.scrollY : container.scrollTop;
       const startTime = 'now' in window.performance ? performance.now() : Date.now();
-
-      const documentHeight = this.docHeight;
-      const windowHeight = this.winHeight;
-      const destinationOffset = Math.max(0, (typeof destination === 'number' ? destination : Math.ceil(destination.getBoundingClientRect().top + window.pageYOffset) - defaults.offset));
-      const destinationOffsetToScroll = Math.round(documentHeight - destinationOffset < windowHeight ? documentHeight - windowHeight : destinationOffset);
+      const contentHeight = isWindow ? this.docHeight : container.scrollHeight;
+      const containerHeight = isWindow ? this.winHeight : container.clientHeight;
+      const destinationOffset = Math.max(0, (typeof destination === 'number' ? destination : Math.ceil(destination.getBoundingClientRect().top + start) - defaults.offset));
+      const destinationOffsetToScroll = Math.round(contentHeight - destinationOffset < containerHeight ? contentHeight - containerHeight : destinationOffset);
       const down = start < destinationOffsetToScroll;
 
       if (!/^f/.test(typeof easing)) {
@@ -112,9 +131,18 @@ export default class Scrrroll {
         const now = 'now' in window.performance ? performance.now() : Date.now();
         const time = Math.min(1, ((now - startTime) / duration));
         const timeFunction = easing(time);
-        window.scroll(0, Math.ceil((timeFunction * (destinationOffsetToScroll - start)) + start));
+        const scrollTop = isWindow ? window.scrollY : container.scrollTop;
+        const scrollTo = Math.ceil((timeFunction * (destinationOffsetToScroll - start)) + start)
 
-        if (Math.abs(window.pageYOffset - destinationOffsetToScroll) < 1 || (down && window.pageYOffset >= (this.docHeight - this.winHeight))) {
+
+        if (isWindow) {
+          window.scroll(0, scrollTo);
+        }
+        else {
+          container.scrollTop = scrollTo;
+        }
+
+        if (Math.abs(scrollTop - destinationOffsetToScroll) < 1 || (down && scrollTop >= (contentHeight - containerHeight))) {
           resolve();
           return;
         }
@@ -137,12 +165,16 @@ export default class Scrrroll {
 
   /**
    * Scroll to the bottom
-   * @param  [...args] - array collecting parameters
-   * @return {Promise} - promise will be resolved when finished scrolling
+   * @param  {Number}             [duration]  - duration of scroll. defaults to defaults.duration
+   * @param  {Function}           [easing]    - easing of scroll. defaults to defaults.easing
+   * @param  {HTMLElement|Window} [container] - the scroll container. defaults to defaults.container
+   * @return {Promise}                        - promise will be resolved when finished scrolling
    */
-  static toBottom(...args) {
-    const destination = this.docHeight - this.winHeight;
-    return this.to(destination, ...args);
+  static toBottom(duration = defaults.duration, easing = defaults.easing, container = defaults.container) {
+    const isWindow = container === window;
+    const contentHeight = isWindow ? this.docHeight : container.scrollHeight;
+    const destination = contentHeight - containerHeight;
+    return this.to(destination, duration, easing, container);
   }
 
   /**
@@ -167,35 +199,43 @@ export default class Scrrroll {
 
   /**
    * Scroll an element into the center of the viewport
-   * @param {HTMLElement} element - element to scroll to
-   * @param  [...args]            - array collecting parameters
-   * @return {Promise}            - promise will be resolved when finished scrolling
+   * @param {HTMLElement}         element     - element to scroll to
+   * @param  {Number}             [duration]  - duration of scroll. defaults to defaults.duration
+   * @param  {Function}           [easing]    - easing of scroll. defaults to defaults.easing
+   * @param  {HTMLElement|Window} [container] - the scroll container. defaults to defaults.container
+   * @return {Promise}                        - promise will be resolved when finished scrolling
    */
-  static center(element, ...args) {
-    const documentHeight = this.docHeight;
-    const windowHeight = this.winHeight;
+  static center(element, duration = defaults.duration, easing = defaults.easing, container = defaults.container) {
+    const isWindow = container === window;
+    const containerHeight = isWindow ? this.winHeight : container.clientHeight;
     const elementRect = element.getBoundingClientRect();
     const elementHeight = elementRect.height;
+    const scrollTop = isWindow ? window.scrollY : container.scrollTop;
     let destination = 0;
 
-    if (elementHeight >= windowHeight - defaults.offset) {
+    if (elementHeight >= containerHeight - defaults.offset) {
       destination = element;
     }
     else {
-      destination = Math.max(Math.ceil(elementRect.top + window.pageYOffset) - (windowHeight / 2) + (elementHeight / 2) - (defaults.offset / 2), 0);
+      destination = Math.max(Math.ceil(elementRect.top + scrollTop) - (containerHeight / 2) + (elementHeight / 2) - (defaults.offset / 2), 0);
     }
-    return this.to(destination, ...args);
+    return this.to(destination, duration, easing, container);
   }
 
   /**
    * Scroll to the bottom of an element
-   * @param {HTMLElement} element - element to scroll to
-   * @param  [...args]            - array collecting parameters
-   * @return {Promise}            - promise will be resolved when finished scrolling
+   * @param {HTMLElement}         element     - element to scroll to
+   * @param  {Number}             [duration]  - duration of scroll. defaults to defaults.duration
+   * @param  {Function}           [easing]    - easing of scroll. defaults to defaults.easing
+   * @param  {HTMLElement|Window} [container] - the scroll container. defaults to defaults.container
+   * @return {Promise}                        - promise will be resolved when finished scrolling
    */
-  static bottom(element, ...args) {
+  static bottom(element, duration = defaults.duration, easing = defaults.easing, container = defaults.container) {
+    const isWindow = container === window;
+    const containerHeight = isWindow ? this.winHeight : container.clientHeight;
+    const scrollTop = isWindow ? window.scrollY : container.scrollTop;
     const elementRect = element.getBoundingClientRect();
-    let destination = Math.ceil(elementRect.top + window.pageYOffset) - this.winHeight + elementRect.height;
-    return this.to(destination, ...args);
+    let destination = Math.ceil(elementRect.top + scrollTop) - containerHeight + elementRect.height;
+    return this.to(destination, duration, easing, container);
   }
 }
